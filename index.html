@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather App</title>
+    <style>
+        *{
+            background-color: gold;
+        }
+        .weatherImg img{
+            height: 5%;
+            width: 10%;
+            border-radius: 70px 70px 0px 70px ;
+        }
+        center{
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif ;
+            color: rgb(118, 118, 243);
+        }
+        .weather_search{
+            
+        }
+        .search_input{
+            /* border: 1px  solid red;     */
+        }
+        .search_input #city {
+            background-color: black;
+            color: white;
+            display: block;
+            margin: 10px auto;
+            height: 50px;
+            width: 35%;
+            outline-offset: -25%;
+            border-radius: 10px;
+            font-size: x-large;
+            padding: 0px 2% ;
+        }
+        .search_input .submit {
+            display: block;
+            margin: auto;
+            height: 40px;
+            width: auto;
+            padding: 0px 15px 0px 15px;
+            cursor: pointer;
+            border-radius: 10px;
+            font-size: x-large;
+
+            border-color: gold;
+            background-color: blue;
+            color: yellow ;
+            font-weight: 700;
+            
+        }
+        .search_input .submit :hover{
+            transform: scale(1.2);
+        }
+
+        .mapouter {
+            position: relative;
+            text-align: right;
+            height: 500px;
+            width: 600px;
+        }
+
+        .gmap_canvas {
+            overflow: hidden;
+            background: none !important;
+            height: 500px;
+            width: 600px;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- <div  class="weatherImg">
+        <img src="weather_app_logo.jpg" alt="">
+    </div> -->
+    <h1 class="weather_search">  <center>  <div  class="weatherImg">
+        <img src="weather_app_logo.jpg" alt="">
+    </div>SIMPLE  WEATHER  APP </center> </h1>
+
+    <form class="search_input">
+        <div ><input type="text" placeholder="Enter City Name" id="city" ></div>
+        <input class="submit" type="submit" value="submit" onclick="submitFunction()">
+    </form>
+
+    <div id="box">
+        <!-- Append data here -->
+
+    </div>
+
+    <div class="mapouter" >
+        <div class="gmap_canvas"  >            
+            <iframe width="600" height="500" id="gmap_canvas" frameborder="0" scrolling="no" marginheight="0"
+                marginwidth="0"></iframe>
+            <a href="https://fmovies-online.net">s</a><br>
+        </div>
+    </div>
+</body>
+
+</html>
+
+<script>
+    // Api keys == ed4011f6fcd2c7764f9afd195543de26
+
+    // const apiKey = "ed4011f6fcd2c7764f9afd195543de26";
+
+
+
+    function submitFunction() {
+        event.preventDefault();
+        let input = document.querySelector("#city").value;
+
+        const url = `https://api.openweathermap.org/data/2.5/weather?q=${input}&appid=ed4011f6fcd2c7764f9afd195543de26`;   
+         ///templete syntex
+
+
+        // const url = `https://api.openweathermap.org/data/2.5/weather?q=${input}&appid=` + apiKey;
+       
+        // console.log(url);
+        fetch_url(url);
+    }
+
+    function fetch_url(url) {
+        async function makeRequest() {
+            try {
+                let res = await fetch(url);
+
+                let hendle = await res.json();
+
+                console.log(hendle);
+                display(hendle);
+            }
+            catch (err) {
+                console.log("err:", err);
+            }
+        }
+        makeRequest();
+    }
+
+    function display(data) {
+        // window.location.reload() ;
+        //here our data is obj ;
+        var cont = document.querySelector("#box")
+        cont.innerHTML = null;
+        let div = document.createElement("div");
+
+        let h3 = document.createElement("h3");
+        h3.style.fontSize = "50px" ;
+        h3.innerText =`City Name:  ${data.name}`;
+
+        let temp = document.createElement("p");
+        temp.style.fontSize = "50px" ;
+        temp.innerText = `Current Temp:  ${data.main.temp - 273.15} `;
+
+        div.append(h3, temp);
+        document.querySelector("#box").append(div);
+
+        let iframe = document.querySelector("#gmap_canvas");
+        iframe.src = `https://maps.google.com/maps?q=${data.name}&t=&z=13&ie=UTF8&iwloc=&output=embed`
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    function live(lat, lon){
+    let url =  `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${apiKey}` ;
+
+         fetch_url(url) ;
+    }
+
+
+    //// Based On Current Location 
+    function getLocationWeather() {
+        navigator.geolocation.getCurrentPosition(success);
+
+        function success(position) {
+            const latitude = position.coords.latitude;
+            const longitude = position.coords.longitude;
+live(latitude, longitude) ;
+            console.log(latitude);
+            console.log(longitude);
+        }
+    }
+
+    getLocationWeather()
+</script>
+
+<!--  src="https://maps.google.com/maps?q=kota&t=&z=13&ie=UTF8&iwloc=&output=embed" -->
